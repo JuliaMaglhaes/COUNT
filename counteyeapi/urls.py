@@ -1,9 +1,9 @@
 from django.urls import path
-from .views import PostList, PostDetail
+from .views import CountList, CountDetail
 
 app_name = 'counteyeapi'
 
 urlpatterns = [
-    path('<int:pk>/', PostDetail.as_view(), name='detailcreate'), 
-    path('', PostList.as_view(), name='listcreate'),
+    path('<int:pk>/', CountDetail.as_view(), name='detailcreate'), 
+    path('', CountList.as_view(), name='listcreate'),
 ]

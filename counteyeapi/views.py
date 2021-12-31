@@ -3,10 +3,10 @@ from .serializers import CountSerializer
 from counteye.models import Count
 # from django.shortcuts import render
 
-class CountSerializer(generics.ListCreateAPIView):
+class CountList(generics.ListCreateAPIView):
     queryset = Count.postobjects.all()
     serializer_class = CountSerializer
-    pass
 
-class CountDetail(generics.RetrieveDestroyAPIView):
-    pass
+class CountDetail(generics.RetrieveDestroyAPIView): #RetrieveAPIView?
+    queryset = Count.objects.all()
+    serializer_class = CountSerializer
