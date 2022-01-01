@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+# from django.contrib.auth.models import User
 from django.utils import timezone
 
 #categoria dos produtos
@@ -25,7 +26,7 @@ class Count(models.Model):
     slug = models.SlugField(max_length=250, unique_for_date = 'counted')
     counted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(
-        User, on_delete = models.CASCADE, related_name = 'posts'
+        settings.AUTH_USER_MODEL, on_delete = models.CASCADE, related_name = 'posts'
     )
     status = models.CharField(max_length=10, choices = options, default='counted')
     objects = models.Manager()
