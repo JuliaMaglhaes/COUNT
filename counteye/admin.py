@@ -8,3 +8,5 @@ class AuthorAdmin(admin.ModelAdmin):
 
 admin.site.register(models.Category)
 
+
+

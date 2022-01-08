@@ -5,7 +5,7 @@ from django.utils import timezone
 
 #categoria dos produtos
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=110)
 
     def __str__(self):
         return self.name
@@ -22,7 +22,7 @@ class Count(models.Model):
     category = models.ForeignKey(Category, on_delete = models.PROTECT, default = 1)
     product = models.CharField(max_length=250)
     description = models.TextField(null=True)
-    amount = models.CharField(max_length=250)
+    amount = models.CharField(max_length=251)
     slug = models.SlugField(max_length=250, unique_for_date = 'counted')
     counted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(
