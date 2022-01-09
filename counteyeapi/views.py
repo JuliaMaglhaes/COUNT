@@ -3,11 +3,12 @@ from rest_framework.permissions import SAFE_METHODS,AllowAny,  IsAuthenticated, 
 from .serializers import CountSerializer
 from counteye.models import Count
 from rest_framework.response import Response
-
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import filters
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from rest_framework.parsers import MultiPartParser, FormParser
 # from django.shortcuts import render
 
 class PermissionUserCount(BasePermission):
@@ -50,10 +51,23 @@ class CountDetail(generics.RetrieveAPIView):
 #     queryset = Count.objects.all()
 #     serializer_class = CountSerializer
 
-class CreateCount(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
-    queryset = Count.objects.all()
-    serializer_class = CountSerializer
+# class CreateCount(generics.CreateAPIView):
+#     permission_classes = [IsAuthenticated]
+#     queryset = Count.objects.all()
+#     serializer_class = CountSerializer
+
+class CreateCount(APIView):
+    permission_classes = [AllowAny]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, format=None):
+        print(request.data)
+        serializer = CountSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class AdminCountDetail(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]

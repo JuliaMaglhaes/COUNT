@@ -16,7 +16,7 @@ app_name = 'counteyeapi'
 urlpatterns = [
     path('', CountList.as_view(), name='countlist'),
     path('post/<str:pk>/', CountDetail.as_view(), name='detailcount'),
-    # Post Admin URLs
+    
     path('admin/create/', CreateCount.as_view(), name='createcount'),
     path('admin/edit/countdetail/<int:pk>/', AdminCountDetail.as_view(), name='admindetailcount'),
     path('admin/edit/<int:pk>/', EditCount.as_view(), name='editcount'),

@@ -26,7 +26,7 @@ class Count(models.Model):
 
     category = models.ForeignKey(Category, on_delete = models.PROTECT, default = 1)
     product = models.CharField(max_length=250)
-    # image = models.ImageField(_("Image"), upload_to = upload_to, default='count/default.jpg')
+    image = models.ImageField(_("Image"), upload_to = upload_to, default='count/default.jpg')
     description = models.TextField(null=True)
     amount = models.CharField(max_length=251)
     slug = models.SlugField(max_length=250, unique_for_date = 'counted')
