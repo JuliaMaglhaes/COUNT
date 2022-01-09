@@ -2,6 +2,11 @@ from django.db import models
 from django.conf import settings
 # from django.contrib.auth.models import User
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
+
+def upload_to(instance, filename):
+    return 'count/{filename}'.format(filename=filename)
+
 
 #categoria dos produtos
 class Category(models.Model):
@@ -21,6 +26,7 @@ class Count(models.Model):
 
     category = models.ForeignKey(Category, on_delete = models.PROTECT, default = 1)
     product = models.CharField(max_length=250)
+    # image = models.ImageField(_("Image"), upload_to = upload_to, default='count/default.jpg')
     description = models.TextField(null=True)
     amount = models.CharField(max_length=251)
     slug = models.SlugField(max_length=250, unique_for_date = 'counted')
