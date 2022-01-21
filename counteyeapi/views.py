@@ -9,7 +9,10 @@ from rest_framework import filters
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
-# from django.shortcuts import render
+import cv2
+from django.views.decorators import gzip
+from django.http import StreamingHttpResponse, HttpResponseServerError
+from django.shortcuts import render
 
 class PermissionUserCount(BasePermission):
     message = 'Somente autores do envio'
@@ -84,3 +87,26 @@ class DeleteCount(generics.RetrieveDestroyAPIView):
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
+def get_frame():
+    camera =cv2.VideoCapture(0) 
+    while True:
+        _, img = camera.read()
+        imgencode=cv2.imencode('.jpg',img)[1]
+        stringData=imgencode.tostring()
+        yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
+    del(camera)
+    
+def indexscreen(request): 
+    try:
+        template = "templates/index.html"
+        return render(request,template)
+    except:
+        print("error")
+
+@gzip.gzip_page
+
+def dynamic_stream(request,stream_path="video"):
+    try :
+        return StreamingHttpResponse(get_frame(),content_type="multipart/x-mixed-replace;boundary=frame")
+    except :
+        return "error"
