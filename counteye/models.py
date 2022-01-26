@@ -43,3 +43,10 @@ class Count(models.Model):
     
     def __str__(self):
         return self.product
+
+def upload(instance, filename):
+    return 'conf/{filename}'.format(filename=filename)
+
+class DetectionModel(models.Model):
+    image = models.ImageField(_("Image"), upload_to = upload, default='conf/default.jpg')
+    category = models.ForeignKey(Category, on_delete = models.PROTECT, default = 1)

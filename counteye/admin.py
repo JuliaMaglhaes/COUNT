@@ -7,6 +7,6 @@ class AuthorAdmin(admin.ModelAdmin):
     prepopulate_fields = {'slug': ('product',),}
 
 admin.site.register(models.Category)
-
+admin.site.register(models.DetectionModel)
 
 

@@ -87,8 +87,9 @@ class DeleteCount(generics.RetrieveDestroyAPIView):
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
+
 def get_frame():
-    camera =cv2.VideoCapture(0) 
+    camera = cv2.VideoCapture(0) 
     while True:
         _, img = camera.read()
         imgencode=cv2.imencode('.jpg',img)[1]
