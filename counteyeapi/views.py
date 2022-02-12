@@ -62,13 +62,27 @@ class CountDetail(generics.RetrieveAPIView):
 class CreateCount(APIView):
     permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser]
+    queryset = Count.objects.all()
 
     def post(self, request, format=None):
-        print(request.data)
         serializer = CountSerializer(data=request.data)
+        from users.models import NewUser
+        user_qualquer = NewUser.objects.first()
+        
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            count = serializer.save()
+            from counteyeapi.services.count_IA import count_product
+            from counteyeapi.services.detection.detection import detection_product
+            print("image", serializer.validated_data["image"])
+            predict = detection_product(serializer.validated_data["image"])
+            amount = count_product(serializer.validated_data["image"])
+
+            count.amount = amount
+            count.product = predict["class"]
+            count.author = user_qualquer
+            count.save()
+    
+            return Response({"produto":predict, "amount": amount}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
@@ -90,12 +104,14 @@ class DeleteCount(generics.RetrieveDestroyAPIView):
 
 def get_frame():
     camera = cv2.VideoCapture(0) 
+
     while True:
         _, img = camera.read()
         imgencode=cv2.imencode('.jpg',img)[1]
         stringData=imgencode.tostring()
         yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
     del(camera)
+
     
 def indexscreen(request): 
     try:
