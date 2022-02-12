@@ -42,6 +42,7 @@ class CountList(generics.ListAPIView):
 #     queryset = Count.postobjects.all()
 #     serializer_class = CountSerializer
 
+# teste
 class CountDetail(generics.RetrieveAPIView):
     serializer_class = CountSerializer
 
