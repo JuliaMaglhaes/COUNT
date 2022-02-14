@@ -8,7 +8,6 @@ from users.models import NewUser
 def upload_to(instance, filename):
     return 'count/{filename}'.format(filename=filename)
 
-
 #categoria dos produtos
 class Category(models.Model):
     name = models.CharField(max_length=110)
@@ -28,9 +27,8 @@ class Count(models.Model):
     category = models.ForeignKey(Category, on_delete = models.PROTECT, default = 1)
     product = models.CharField(max_length=250, blank=True, null=True)
     image = models.ImageField(_("Image"), upload_to = upload_to, default='count/default.jpg')
-    description = models.TextField(null=True)
     amount = models.IntegerField(blank=True, null=True)
-    slug = models.SlugField(max_length=250, unique_for_date = 'counted')
+    # slug = models.SlugField(max_length=250, unique_for_date = 'counted')
     counted = models.DateTimeField(default=timezone.now)
     author = models.ForeignKey(NewUser, on_delete = models.CASCADE, related_name = 'user', blank=True, null=True)
     status = models.CharField(max_length=10, choices = options, default='counted')
@@ -44,6 +42,10 @@ class Count(models.Model):
 def upload(instance, filename):
     return 'conf/p/{filename}'.format(filename=filename)
 
-class DetectionModel(models.Model):
-    image = models.ImageField(_("Image"), upload_to = upload, default='conf/p/default.jpg')
+class ProductsRegister(models.Model):
     category = models.ForeignKey(Category, on_delete = models.PROTECT, default = 1)
+    product = models.CharField(max_length=250, blank=True, null=True)
+    amount = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return self.product

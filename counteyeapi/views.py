@@ -14,6 +14,10 @@ from django.views.decorators import gzip
 from django.http import StreamingHttpResponse, HttpResponseServerError
 from django.shortcuts import render
 
+from counteyeapi.services.count_IA import count_product
+from counteyeapi.services.detection.detection import detection_product
+from users.models import NewUser
+
 class PermissionUserCount(BasePermission):
     message = 'Somente autores do envio'
 
@@ -30,18 +34,6 @@ class CountList(generics.ListAPIView):
     serializer_class = CountSerializer
     queryset = Count.postobjects.all()
 
-    # def get_object(self, queryset=None, **kwargs):
-    #     item = self.kwargs.get('pk')
-    #     return get_object_or_404(Count, slug=item)
-
-    # def get_queryset(self):
-    #     return Count.objects.all()
-
-# class CountList(generics.ListCreateAPIView):
-#     permission_classes = [AllowAny]
-#     queryset = Count.postobjects.all()
-#     serializer_class = CountSerializer
-
 # teste
 class CountDetail(generics.RetrieveAPIView):
     serializer_class = CountSerializer
@@ -49,11 +41,6 @@ class CountDetail(generics.RetrieveAPIView):
     def get_object(self, queryset=None, **kwargs):
         item = self.kwargs.get('pk')
         return get_object_or_404(Count, slug=item)
-
-# class CountDetail(generics.RetrieveUpdateDestroyAPIView, PermissionUserCount ): #RetrieveDestroyAPIView?
-#     permission_classes = [AllowAny]
-#     queryset = Count.objects.all()
-#     serializer_class = CountSerializer
 
 # class CreateCount(generics.CreateAPIView):
 #     permission_classes = [IsAuthenticated]
@@ -67,13 +54,11 @@ class CreateCount(APIView):
 
     def post(self, request, format=None):
         serializer = CountSerializer(data=request.data)
-        from users.models import NewUser
         user_qualquer = NewUser.objects.first()
         
         if serializer.is_valid():
             count = serializer.save()
-            from counteyeapi.services.count_IA import count_product
-            from counteyeapi.services.detection.detection import detection_product
+
             print("image", serializer.validated_data["image"])
             predict = detection_product(serializer.validated_data["image"])
             amount = count_product(serializer.validated_data["image"])

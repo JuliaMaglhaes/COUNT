@@ -15,8 +15,9 @@ def detection_product(image):
     with open("names.names", "r") as f:
         class_names = [cname.strip() for cname in f.readlines()]
     cap = cv2.imread(f"media\count\{image}")
-    modelWeightsPath = "yolov3_training_last.weights"
-    modelConfigurationPath = "yolov3_testing.cfg"
+
+    modelWeightsPath = "counteyeapi\services\detection\yolov3_training_last.weights"
+    modelConfigurationPath = "counteyeapi\services\detection\yolov3_testing.cfg"
 
     net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
     model = cv2.dnn_DetectionModel(net)
