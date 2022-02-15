@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.permissions import SAFE_METHODS,AllowAny,  IsAuthenticated, DjangoModelPermissions, BasePermission
 from .serializers import CountSerializer
-from counteye.models import Count
+from counteye.models import Count, ProductsRegister
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import viewsets
@@ -22,7 +22,6 @@ class PermissionUserCount(BasePermission):
     message = 'Somente autores do envio'
 
     def has_object_permission(self, request, view, obj):
-
         if request.method in SAFE_METHODS:
             return True
 
@@ -42,11 +41,6 @@ class CountDetail(generics.RetrieveAPIView):
         item = self.kwargs.get('pk')
         return get_object_or_404(Count, slug=item)
 
-# class CreateCount(generics.CreateAPIView):
-#     permission_classes = [IsAuthenticated]
-#     queryset = Count.objects.all()
-#     serializer_class = CountSerializer
-
 class CreateCount(APIView):
     permission_classes = [AllowAny]
     parser_classes = [MultiPartParser, FormParser]
@@ -55,20 +49,27 @@ class CreateCount(APIView):
     def post(self, request, format=None):
         serializer = CountSerializer(data=request.data)
         user_qualquer = NewUser.objects.first()
-        
+
         if serializer.is_valid():
             count = serializer.save()
-
-            print("image", serializer.validated_data["image"])
             predict = detection_product(serializer.validated_data["image"])
-            amount = count_product(serializer.validated_data["image"])
-
-            count.amount = amount
+            xamount = count_product(serializer.validated_data["image"])
+            count.amount = xamount
             count.product = predict["class"]
             count.author = user_qualquer
             count.save()
-    
-            return Response({"produto":predict, "amount": amount}, status=status.HTTP_200_OK)
+            acount=0
+
+            for a in ProductsRegister.objects.filter(product=count.product):
+                acount = a.amount               
+               
+            print(acount)
+
+            t= ProductsRegister.amount
+            # teste *
+            ProductsRegister.objects.filter(product=count.product).update(product=count.product , amount = count.amount + acount)
+     
+            return Response({"produto":predict, "amount": xamount}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
