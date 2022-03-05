@@ -13,7 +13,6 @@ import cv2
 from django.views.decorators import gzip
 from django.http import StreamingHttpResponse, HttpResponseServerError
 from django.shortcuts import render
-
 from counteyeapi.services.count_IA import count_product
 from counteyeapi.services.detection.detection import detection_product
 from users.models import NewUser
@@ -24,9 +23,7 @@ class PermissionUserCount(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
-
         return obj.author == request.user
-
 
 class CountList(generics.ListAPIView):
     # permission_classes = [AllowAny]
@@ -64,7 +61,6 @@ class CreateCount(APIView):
                 acount = a.amount               
                
             print(acount)
-
             t= ProductsRegister.amount
             # teste *
             ProductsRegister.objects.filter(product=count.product).update(product=count.product , amount = count.amount + acount)
@@ -99,7 +95,6 @@ def get_frame():
         yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
     del(camera)
 
-    
 def indexscreen(request): 
     try:
         template = "templates/index.html"

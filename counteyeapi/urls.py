@@ -9,11 +9,6 @@ app_name = 'counteyeapi'
 # router.register('', CountList, basename='post')
 # urlpatterns = router.urls
 
-# urlpatterns = [
-#     path('<int:pk>/', CountDetail.as_view(), name='detailcreate'), 
-#     path('', CountList.as_view(), name='listcreate'),
-# ]
-
 urlpatterns = [
     path('', CountList.as_view(), name='countlist'),
     path('post/<str:pk>/', CountDetail.as_view(), name='detailcount'),
