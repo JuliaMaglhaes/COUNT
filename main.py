@@ -4,23 +4,16 @@ from cv2 import VideoCapture
 
 COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
-class_names = []
-counted_items = 0
-threshold = 0.3 
-conditional = True
 
-# limite para um carro ser contato
-
-with open(r"C:\Users\julia\OneDrive\Área de Trabalho\COUNT\names.names", "r") as f:
+with open(r"C:\Users\julia\OneDrive\Área de Trabalho\COUNT\counteyeapi\services\detection\names.names", "r") as f:
     class_names = [cname.strip() for cname in f.readlines()]
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture()
+cap.open("http://100.100.214.110:8080/videofeed")
 
-# modelWeightsPath = "yolov3-tiny.weights"
-# modelConfigurationPath = "yolov3-tiny.cfg"
 
-modelWeightsPath = "yolov3_training_last.weights"
-modelConfigurationPath = "yolov3_testing.cfg"
+modelWeightsPath = "counteyeapi\services\detection\yolov3_training_last.weights"
+modelConfigurationPath = "counteyeapi\services\detection\yolov3_testing.cfg"
 
 net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
 model = cv2.dnn_DetectionModel(net)
@@ -52,7 +45,7 @@ while True:
     
     cv2.imshow("Detector", frame)
 
-    if cv2.waitKey(1) == 27:
+    if cv2.waitKey(0) == 27:
         # tecla para sair
         break
 

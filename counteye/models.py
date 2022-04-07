@@ -30,7 +30,7 @@ class Count(models.Model):
     amount = models.IntegerField(blank=True, null=True)
     # slug = models.SlugField(max_length=250, unique_for_date = 'counted')
     counted = models.DateTimeField(default=timezone.now)
-    author = models.ForeignKey(NewUser, on_delete = models.CASCADE, related_name = 'user', blank=True, null=True)
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE, related_name = 'user', blank=True, null=True)
     status = models.CharField(max_length=10, choices = options, default='counted')
     objects = models.Manager()
     postobjects = CountObjects()
