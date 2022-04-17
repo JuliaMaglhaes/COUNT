@@ -5,7 +5,7 @@ from django.conf import settings
 class CountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Count
-        fields = ('image', )
+        fields = ('image', 'id', 'product', 'amount')
     
 class UserRegisterSerializer(serializers.ModelSerializer):
 

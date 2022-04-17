@@ -62,7 +62,6 @@ class CreateCount(APIView):
                
             print(acount)
             t= ProductsRegister.amount
-            # teste *
             ProductsRegister.objects.filter(product=count.product).update(product=count.product , amount = count.amount + acount)
      
             return Response({"produto":predict, "amount": xamount}, status=status.HTTP_200_OK)
