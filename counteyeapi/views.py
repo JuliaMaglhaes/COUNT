@@ -69,17 +69,17 @@ class CreateCount(APIView):
             return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
 class AdminCountDetail(generics.RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
 class EditCount(generics.UpdateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
 class DeleteCount(generics.RetrieveDestroyAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
