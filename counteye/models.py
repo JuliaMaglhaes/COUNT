@@ -35,6 +35,9 @@ class Count(models.Model):
     objects = models.Manager()
     postobjects = CountObjects()
 
+    def __str__(self):
+        return self.product
+
     class Ordering:
         ordering = ('-counted',)
     
