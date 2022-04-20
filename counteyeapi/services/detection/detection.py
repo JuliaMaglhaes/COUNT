@@ -5,16 +5,12 @@ from cv2 import VideoCapture
 COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = []
-counted_items = 0
-threshold = 0.3 
-conditional = True
-
-# limite para um carro ser contato
 
 def detection_product(image):
     with open("names.names", "r") as f:
         class_names = [cname.strip() for cname in f.readlines()]
-    cap = cv2.imread(f"media\count\{image}")
+    recebimento = cv2.imread(f"media\count\{image}")
+    cap = cv2.cvtColor(recebimento, cv2.COLOR_BGR2GRAY)
 
     modelWeightsPath = "counteyeapi\services\detection\yolov3_training_last.weights"
     modelConfigurationPath = "counteyeapi\services\detection\yolov3_testing.cfg"

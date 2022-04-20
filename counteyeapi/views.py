@@ -83,10 +83,8 @@ class DeleteCount(generics.RetrieveDestroyAPIView):
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
-# detector camera
 COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
-with open(r"C:\Users\julia\OneDrive\Área de Trabalho\COUNT\counteyeapi\services\detection\names.names", "r") as f:
-    class_names = [cname.strip() for cname in f.readlines()]
+class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
 modelWeightsPath = "counteyeapi\services\detection\yolov3_training_last.weights"
 modelConfigurationPath = "counteyeapi\services\detection\yolov3_testing.cfg"
@@ -95,42 +93,28 @@ model = cv2.dnn_DetectionModel(net)
 model.setInputParams(size = (416, 416), scale=1/255)
 
 def get_frame():
-    camera = cv2.VideoCapture() 
-    camera.open("http://192.168.0.100:8080/videofeed")
+    camera = cv2.VideoCapture(0) 
+    # camera.open("http://192.168.0.100:8080/videofeed")
 
     while True:
         _, img = camera.read()
         classes, scores, boxes = model.detect(img, 0.1, 0.2)
 
-        # contador = 0
         for (classid, score, box) in zip(classes, scores, boxes):
             color = COLORS[int(classid) % len(COLORS)]
             label = f"{class_names[0]} : {score}"
-            # contador = contador + 1
 
             cv2.rectangle(img, box, color, 2)
             cv2.putText(img, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
-
-            # print(contador)
-
-        # if cv2.waitKey(0) == 27:
-        #     break
+        
+        if cv2.waitKey(0) == 27:
+            break
 
         imgencode=cv2.imencode('.jpg',img)[1]
         stringData=imgencode.tostring()
         yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
     del(camera)
 
-# def get_frame():
-#     camera = cv2.VideoCapture() 
-#     camera.open("http://100.100.214.110:8080/videofeed")
-
-#     while True:
-#         _, img = camera.read()
-#         imgencode=cv2.imencode('.jpg',img)[1]
-#         stringData=imgencode.tostring()
-#         yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
-#     del(camera)
     
 def indexscreen(request): 
     try:
@@ -140,7 +124,6 @@ def indexscreen(request):
         print("error")
 
 @gzip.gzip_page
-
 def dynamic_stream(request,stream_path="video"):
     try :
         return StreamingHttpResponse(get_frame(),content_type="multipart/x-mixed-replace;boundary=frame")
