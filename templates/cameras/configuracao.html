@@ -1,0 +1,83 @@
+
+<br><br>
+
+<style>
+  #tableContainer{
+    padding-left: 0px;
+    padding-right: 60px;
+  }
+
+  #botoes{
+    padding-right: 10px;
+    vertical-align: bottom;
+    text-align: right;
+  }
+
+  #searchFieldgroup{
+    width: 360px;
+  }
+
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+      <div class="col-md-9">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a href="">Câmeras</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+              Câmeras ativas
+            </li>
+          </ol>
+        </nav>
+      </div>
+      <div class="col-md-3">
+        <a href="" class="btn btn-outline-primary">Configurar n. câmera</a>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7"></div>
+      <div class="col-md-5">
+        <div class="form-group" id="searchFieldgroup">
+          <input type="text" class="form-control" id="searchField" placeholder="Procurar">
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="tableContainer">
+      {% if cameras.count %}
+        <table class="table table-stripped table-hover ">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Câmera</th>
+                    <th>IP</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+              {% for camera in cameras %}
+                <tr>
+                    <td>{{camera.descricao}}</td>
+                    <td>{{camera.ip}}</td>
+
+                    <td id="botoes">
+                      <a class="btn btn-outline-dark" href="{% url 'counteyeapi:editcamera' camera.id %}">
+                          Editar
+                      </a>
+                      <a class="btn btn-outline-danger" href="{% url 'counteyeapi:deletarcamera' camera.id %}">
+                        Deletar
+                    </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+
+    
+    </div>
+
+
+

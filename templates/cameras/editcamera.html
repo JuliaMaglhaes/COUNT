@@ -1,0 +1,45 @@
+
+<br><br>
+<div class="container mt-4">
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="">Câmeras</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Editar câmera</li>
+    </ol>
+  </nav>
+
+  <div class="card">
+    <div class="card-body">
+      <form action="{% url 'counteyeapi:novacamera' %}" method="post">
+         {% csrf_token %}
+        <div class="form-group">
+          <label for="">Câmera</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            name="descricao"
+            value="{{values.descricao}}"
+          />
+        </div>
+        <div class="form-group">
+          <label for="">IP</label>
+          <input
+            type="text"
+            class="form-control form-control-sm"
+            name="ip"
+            value="{{values.ip}}"
+          />
+        </div>
+        
+        <input
+          type="submit"
+          value="Salvar"
+          class="btn btn-primary btn-primary-sm"
+        />
+      </form>
+    </div>
+  </div>
+</div>

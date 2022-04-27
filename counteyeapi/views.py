@@ -1,3 +1,4 @@
+from threading import Thread
 from rest_framework import generics
 from rest_framework.permissions import SAFE_METHODS,AllowAny,  IsAuthenticated, DjangoModelPermissions, BasePermission
 from .serializers import CountSerializer
@@ -12,11 +13,14 @@ from rest_framework.parsers import MultiPartParser, FormParser
 import cv2
 from django.views.decorators import gzip
 from django.http import StreamingHttpResponse, HttpResponseServerError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from counteyeapi.services.count_IA import count_product
 from counteyeapi.services.detection.detection import detection_product
 from users.models import NewUser
 import math
+from .models import *
+from django.core.paginator import Paginator
+import concurrent.futures
 
 
 class PermissionUserCount(BasePermission):
@@ -32,7 +36,6 @@ class CountList(generics.ListAPIView):
     serializer_class = CountSerializer
     queryset = Count.postobjects.all()
 
-# teste
 class CountDetail(generics.RetrieveAPIView):
     serializer_class = CountSerializer
 
@@ -85,86 +88,135 @@ class DeleteCount(generics.RetrieveDestroyAPIView):
     queryset = Count.objects.all()
     serializer_class = CountSerializer
 
-COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
-class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-modelWeightsPath = "counteyeapi\services\detection\yolov3_training_last.weights"
-modelConfigurationPath = "counteyeapi\services\detection\yolov3_testing.cfg"
+COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
+# class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
+
+# modelWeightsPath = "counteyeapi\services\detection\yolov3_training_last.weights"
+# modelConfigurationPath = "counteyeapi\services\detection\yolov3_testing.cfg"
+# net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
+
+class_names = [c.strip() for c in open('./counteyeapi/teste/coco.names').readlines()]
+
+modelWeightsPath = "./counteyeapi/teste/yolov3-tiny.weights"
+modelConfigurationPath = "./counteyeapi/teste/yolov3-tiny.cfg"
 net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
+
 model = cv2.dnn_DetectionModel(net)
 model.setInputParams(size = (416, 416), scale=1/255)
 
+def iteraip(object):
+    for i in object:
+        yield i
 
-def get_frame():
+# @gzip.gzip_page
+def dynamic_stream(request, descricao):
+    
+    # request, stream_path="video"
+    results = []
+    threads = {}
+    ips = {}
+
+    cameras = Cameras.objects.all()
+    itera = iteraip(cameras)
+
+    for i in range(cameras.count()):
+        seila = next(itera)
+        t = Thread(target = get_frame, args=(seila.ip, results))
+        threads[seila.descricao] = t
+        ips[seila.descricao] = seila.ip
+        t.start()
+
+    i = threads[descricao]
+    i.join()
+        
+        # results.append(StreamingHttpResponse(get_frame(i,cameras[j].ip),content_type="multipart/x-mixed-replace;boundary=frame"))
+        
+    return StreamingHttpResponse(get_frame(i, ips[descricao]),content_type="multipart/x-mixed-replace;boundary=frame")
+
+
+#     return StreamingHttpResponse(get_frame(),content_type="multipart/x-mixed-replace;boundary=frame")
+def get_frame(self, ip):
+    # cameras = Cameras.objects.get(pk=ip)
     count = 0
     center_points_prev_frame = []
     tracking_objects = {}
     track_id = 0
 
-    camera = cv2.VideoCapture(0) 
+    print('ip no get frame:',ip)
+
+    # camera = cv2.VideoCapture(0) 
+    camera = cv2.VideoCapture(ip)
     # camera.open("http://192.168.0.100:8080/videofeed")
 
-    while True:
-
-        _, img = camera.read()
-        count += 1
-        center_points_cur_frame = []
-        classes, scores, boxes = model.detect(img, 0.1, 0.2)
-
-        for (classid, score, box) in zip(classes, scores, boxes):
-            (x,y,w,h) = box
-            cx = int((x + x + w) /2)
-            cy = int((y + y + h) /2)
-            center_points_cur_frame.append((cx,cy))
-
-            # cv2.circle(img, (cx, cy), 5, (0,0, 255), -1)
-            cv2.rectangle(img, (x,y), (x + w, y+h), (0,255,0), 2)
-
-        if count <= 2:
-            for pt in center_points_cur_frame:
-                for pt2 in center_points_prev_frame:
-                    distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
-                    
-                    if distance < 20:
-                        tracking_objects[track_id] = pt
-                        track_id += 1
-        else:
-            tracking_objects_copy = tracking_objects.copy()
-            center_points_cur_frame_copy = center_points_cur_frame.copy()
+    try:
+        while True:
             
-            for object_id, pt2 in tracking_objects_copy.items():
-                object_exists = False
-                for pt in center_points_cur_frame_copy:
-                    distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
-                   
-                    if distance < 20:
-                        tracking_objects[object_id] = pt
-                        object_exists = True
-                        if pt in center_points_cur_frame:
-                            center_points_cur_frame.remove(pt)
-                        continue
+            _, img = camera.read()
+            img = cv2.resize(img, (280, 280)) 
+            count += 1
+            center_points_cur_frame = []
+            
+            classes, scores, boxes = model.detect(img, 0.1, 0.2)
 
-                if not object_exists:
-                    tracking_objects.pop(object_id)
+            for (classid, score, box) in zip(classes, scores, boxes):
+                (x,y,w,h) = box
+                cx = int((x + x + w) /2)
+                cy = int((y + y + h) /2)
+                center_points_cur_frame.append((cx,cy))
+                
+                # cv2.circle(img, (cx, cy), 5, (0,0, 255), -1)
+                cv2.rectangle(img, (x,y), (x + w, y+h), (0,255,0), 2)
 
-            for pt in center_points_cur_frame:
-                tracking_objects[track_id] = pt
-                track_id += 1
-        
-        for object_id, pt in tracking_objects.items():
-            cv2.circle(img, pt, 5, (0,0, 255), -1)
-            cv2.putText(img, str(object_id),(pt[0], pt[1] - 7), 0, 1, (0, 0, 255), -2)
+            if count <= 2:
+                for pt in center_points_cur_frame:
+                    for pt2 in center_points_prev_frame:
+                        distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
+                        
+                        if distance < 20:
+                            tracking_objects[track_id] = pt
+                            track_id += 1
+            else:
+                tracking_objects_copy = tracking_objects.copy()
+                center_points_cur_frame_copy = center_points_cur_frame.copy()
+                
+                for object_id, pt2 in tracking_objects_copy.items():
+                    object_exists = False
+                    for pt in center_points_cur_frame_copy:
+                        distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
+                    
+                        if distance < 20:
+                            tracking_objects[object_id] = pt
+                            object_exists = True
+                            if pt in center_points_cur_frame:
+                                center_points_cur_frame.remove(pt)
+                            continue
 
-        center_points_prev_frame = center_points_cur_frame.copy()
-        
-        if cv2.waitKey(0) == 27:
-            break
+                    if not object_exists:
+                        tracking_objects.pop(object_id)
 
+                for pt in center_points_cur_frame:
+                    tracking_objects[track_id] = pt
+                    track_id += 1
+            
+            for object_id, pt in tracking_objects.items():
+                cv2.circle(img, pt, 5, (0,0, 255), -1)
+                # cv2.putText(img, str(object_id),(pt[0], pt[1] - 7), 0, 1, (0, 0, 255), -2)
+                # cv2.putText(img, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
 
-        imgencode=cv2.imencode('.jpg',img)[1]
-        stringData=imgencode.tostring()
-        yield (b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n')
-    del(camera)
+            center_points_prev_frame = center_points_cur_frame.copy()
+
+            # print(tracking_objects)
+            
+            if cv2.waitKey(0) == 27:
+                break
+            
+            imgencode=cv2.imencode('.jpg',img)[1]
+            stringData=imgencode.tostring()
+            yield((b'--frame\r\n'b'Content-Type: text/plain\r\n\r\n'+stringData+b'\r\n'))
+        del(camera)
+    except: 
+        pass
 
     
 def indexscreen(request): 
@@ -174,9 +226,81 @@ def indexscreen(request):
     except:
         print("error")
 
-@gzip.gzip_page
-def dynamic_stream(request,stream_path="video"):
-    try :
-        return StreamingHttpResponse(get_frame(),content_type="multipart/x-mixed-replace;boundary=frame")
-    except :
-        return "error"
+# Configuração cameras
+
+def cameras(request):
+    cameras = Cameras.objects.all()
+    context ={
+        'cameras': cameras,
+    }
+
+    return render(request, 'cameras/camera.html', context)
+
+def configuracao(request):
+    cameras = Cameras.objects.all()
+    paginator = Paginator(cameras, 7)
+    page_number = request.GET.get("page")
+    page_obj = Paginator.get_page(paginator, page_number)
+    context ={
+        'cameras': cameras,
+        'page_obj':page_obj
+    }
+    return render(request, 'cameras/configuracao.html', context)
+
+def novacamera(request):
+    cameras = Cameras.objects.all()
+    context = {
+        'cameras': cameras,
+
+    }
+    if request.method == 'GET':
+        return render(request, 'cameras/novacamera.html', context)
+
+    if request.method == 'POST':
+        ip = request.POST['ip']
+
+        if not ip:
+            return render(request, 'cameras/novacamera.html', context)
+        
+        descricao = request.POST['descricao']
+
+        if not descricao:
+            return render(request, 'cameras/novacamera.html', context)
+
+        Cameras.objects.create( ip=ip,  descricao=descricao)        
+        return redirect('configuracao/')
+
+
+def deletarcamera(request, id):
+    cameras = Cameras.objects.get(pk=id)
+    cameras.delete()
+    return redirect('configuracao/')
+
+
+def editcamera(request, id):
+    cameras = Cameras.objects.get(pk=id)
+    context = {
+        'cameras': cameras,
+        'values': cameras,
+        
+    }
+    if request.method == 'GET':
+        return render(request, 'cameras/editcamera.html', context)
+
+    if request.method == 'POST':
+        ip = request.POST['ip']
+
+        if not ip:
+            return render(request, 'cameras/editcamera.html', context)
+
+        descricao = request.POST['descricao']
+
+        if not descricao:
+            return render(request, 'cameras/editcamera.html', context)
+
+        cameras.ip = ip
+        cameras.descricao = descricao
+
+        cameras.save()
+
+        return redirect('configuracao/')

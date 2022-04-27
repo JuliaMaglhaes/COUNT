@@ -1,0 +1,9 @@
+{% for camera in cameras %}
+    <div class="card bg-dark mb-3" id="card-teste" style="width: 21rem;">
+        <a href="{% url 'counteyeapi:dynamic_stream' camera.descricao  %}"><img class="card-img-top" src="{% url 'counteyeapi:dynamic_stream' camera.descricao %}" alt="Card image cap"></img></a>
+        <div class="card-body">
+            <p class="card-text">{{camera.descricao}}</p>
+        </div>
+    </div>
+{% endfor %}
+     
