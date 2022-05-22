@@ -98,12 +98,13 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-modelWeightsPath = "./counteyeapi/services/detection/yolov3_training_last.weights"
-modelConfigurationPath = "./counteyeapi/services/detection/yolov3_testing.cfg"
-net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
+# modelWeightsPath = "./counteyeapi/services/detection/yolov3_training_last.weights"
+# modelConfigurationPath = "./counteyeapi/services/detection/yolov3_testing.cfg"
 
-model = cv2.dnn_DetectionModel(net)
-model.setInputParams(size = (416, 416), scale=1/255)
+# net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
+
+# model = cv2.dnn_DetectionModel(net)
+# model.setInputParams(size = (416, 416), scale=1/255)
 
 def iteraip(object):
     for i in object:
@@ -154,57 +155,57 @@ def get_frame(self, ip):
             
             _, img = camera.read()
             img = cv2.resize(img, (280, 280)) 
-            count += 1
-            center_points_cur_frame = []
+            # count += 1
+            # center_points_cur_frame = []
             
-            classes, scores, boxes = model.detect(img, 0.1, 0.2)
+            # classes, scores, boxes = model.detect(img, 0.1, 0.2)
 
-            for (classid, score, box) in zip(classes, scores, boxes):
-                (x,y,w,h) = box
-                cx = int((x + x + w) /2)
-                cy = int((y + y + h) /2)
-                center_points_cur_frame.append((cx,cy))
+            # for (classid, score, box) in zip(classes, scores, boxes):
+            #     (x,y,w,h) = box
+            #     cx = int((x + x + w) /2)
+            #     cy = int((y + y + h) /2)
+            #     center_points_cur_frame.append((cx,cy))
                 
-                # cv2.circle(img, (cx, cy), 5, (0,0, 255), -1)
-                cv2.rectangle(img, (x,y), (x + w, y+h), (0,255,0), 2)
+            #     # cv2.circle(img, (cx, cy), 5, (0,0, 255), -1)
+            #     cv2.rectangle(img, (x,y), (x + w, y+h), (0,255,0), 2)
 
-            if count <= 2:
-                for pt in center_points_cur_frame:
-                    for pt2 in center_points_prev_frame:
-                        distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
+            # if count <= 2:
+            #     for pt in center_points_cur_frame:
+            #         for pt2 in center_points_prev_frame:
+            #             distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
                         
-                        if distance < 20:
-                            tracking_objects[track_id] = pt
-                            track_id += 1
-            else:
-                tracking_objects_copy = tracking_objects.copy()
-                center_points_cur_frame_copy = center_points_cur_frame.copy()
+            #             if distance < 20:
+            #                 tracking_objects[track_id] = pt
+            #                 track_id += 1
+            # else:
+            #     tracking_objects_copy = tracking_objects.copy()
+            #     center_points_cur_frame_copy = center_points_cur_frame.copy()
                 
-                for object_id, pt2 in tracking_objects_copy.items():
-                    object_exists = False
-                    for pt in center_points_cur_frame_copy:
-                        distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
+            #     for object_id, pt2 in tracking_objects_copy.items():
+            #         object_exists = False
+            #         for pt in center_points_cur_frame_copy:
+            #             distance = math.hypot(pt2[0] - pt[0], pt2[1] - pt[1])
                     
-                        if distance < 20:
-                            tracking_objects[object_id] = pt
-                            object_exists = True
-                            if pt in center_points_cur_frame:
-                                center_points_cur_frame.remove(pt)
-                            continue
+            #             if distance < 20:
+            #                 tracking_objects[object_id] = pt
+            #                 object_exists = True
+            #                 if pt in center_points_cur_frame:
+            #                     center_points_cur_frame.remove(pt)
+            #                 continue
 
-                    if not object_exists:
-                        tracking_objects.pop(object_id)
+            #         if not object_exists:
+            #             tracking_objects.pop(object_id)
 
-                for pt in center_points_cur_frame:
-                    tracking_objects[track_id] = pt
-                    track_id += 1
+            #     for pt in center_points_cur_frame:
+            #         tracking_objects[track_id] = pt
+            #         track_id += 1
             
-            for object_id, pt in tracking_objects.items():
-                cv2.circle(img, pt, 5, (0,0, 255), -1)
-                # cv2.putText(img, str(object_id),(pt[0], pt[1] - 7), 0, 1, (0, 0, 255), -2)
-                # cv2.putText(img, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
+            # for object_id, pt in tracking_objects.items():
+            #     cv2.circle(img, pt, 5, (0,0, 255), -1)
+            #     # cv2.putText(img, str(object_id),(pt[0], pt[1] - 7), 0, 1, (0, 0, 255), -2)
+            #     # cv2.putText(img, label, (box[0], box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, 2)
 
-            center_points_prev_frame = center_points_cur_frame.copy()
+            # center_points_prev_frame = center_points_cur_frame.copy()
 
             # print(tracking_objects)
             

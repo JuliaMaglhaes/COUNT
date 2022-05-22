@@ -14,7 +14,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
-import django_heroku
+# import django_heroku
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-8e0$@9l7q63p$tb+rg4+)86^g!nj7^u9w3hr&ipq)vdiptlr5b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://counteyeapi.herokuapp.com/"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -194,4 +194,4 @@ REST_FRAMEWORK = {
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

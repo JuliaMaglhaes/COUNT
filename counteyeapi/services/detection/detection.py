@@ -7,7 +7,7 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 class_names = []
 
 def detection_product(image):
-    with open("names.names", "r") as f:
+    with open("./counteyeapi/services/detection/names.names", "r") as f:
         class_names = [cname.strip() for cname in f.readlines()]
     recebimento = cv2.imread(f"media\count\{image}")
     cap = cv2.cvtColor(recebimento, cv2.COLOR_BGR2GRAY)
