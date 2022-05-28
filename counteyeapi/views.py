@@ -99,8 +99,8 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-modelWeightsPath = "./counteyeapi/yolov3_training_last2.weights"
-modelConfigurationPath = "./counteyeapi/yolov3_testing2.cfg"
+modelWeightsPath = "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_training_last.weights"
+modelConfigurationPath = "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_testing.cfg"
 
 net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
 
