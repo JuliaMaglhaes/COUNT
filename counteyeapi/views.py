@@ -102,10 +102,9 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-modelWeightsPath = os.path.abspath('yolov3_training_last.weights')
-modelConfigurationPath = os.path.abspath('yolov3_testing.cfg')
+modelWeightsPath = os.path.abspath(BASE_DIR, 'count/counteyeapi/services/detection/yolov3_training_last.weights')
+modelConfigurationPath = os.path.join(BASE_DIR, 'count/counteyeapi/services/detection/yolov3_testing.cfg')
 
-print(modelWeightsPath)
 
 # "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_training_last.weights"
 # "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_testing.cfg"
