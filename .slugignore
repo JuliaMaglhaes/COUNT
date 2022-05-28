@@ -15,3 +15,4 @@ darknet
 requirements2.txt
 /conf
 tests.py
+/darkflow

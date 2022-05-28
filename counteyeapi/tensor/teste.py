@@ -35,16 +35,6 @@ def teste(INPUT_IMAGE):
       "class": "Desconhecido"
     }
 
-    # try:
-    #     classes, scores, boxes = model.detect(cap, 0.1, 0.2)
-    #     for (classid, score, box) in zip(classes, scores, boxes):
-    #         predict = {
-    #             "class": class_names[0],
-    #             "accuracy": score
-    #         }
-    # except Exception as ex:
-    #     pass
-
     return predict
 
   interpreter = tf.lite.Interpreter(model)
