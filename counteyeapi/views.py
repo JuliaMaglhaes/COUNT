@@ -108,8 +108,6 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 
 # net = cv2.dnn.readNet(modelWeightsPath, modelConfigurationPath)
-
-
 # model = cv2.dnn_DetectionModel(net)
 # model.setInputParams(size = (416, 416), scale=1/255)
 
