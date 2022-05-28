@@ -112,7 +112,7 @@ print(modelConfigurationPath)
 # "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_training_last.weights"
 # "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_testing.cfg"
 
-net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
+net = cv2.dnn.readNet(modelWeightsPath, modelConfigurationPath)
 
 print(modelConfigurationPath)
 print(modelWeightsPath)
