@@ -104,7 +104,7 @@ modelConfigurationPath = "./counteyeapi/services/detection/yolov3_testing.cfg"
 
 net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
 
-model = cv2.dnn_DetectionModel(net)
+model = cv2.readNetFromDarknet(net)
 model.setInputParams(size = (416, 416), scale=1/255)
 
 def iteraip(object):
