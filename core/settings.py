@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-8e0$@9l7q63p$tb+rg4+)86^g!nj7^u9w3hr&ipq)vdiptlr5b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["https://counteyeapi.herokuapp.com/"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -195,3 +195,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
 django_heroku.settings(locals())
+

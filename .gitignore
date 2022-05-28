@@ -1,3 +1,6 @@
 .vscode
 *.sqlite
 *.jpg
+*.sqlite3
+site
+venvp

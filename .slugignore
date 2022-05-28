@@ -2,3 +2,8 @@
 *.pdf
 *.jpg
 *.jpge
+*.cfg
+*.weight
+*.sqlite3
+site
+venvp
