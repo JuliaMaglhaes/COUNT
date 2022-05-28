@@ -1,3 +1,5 @@
+import os
+from core.settings import BASE_DIR
 import tensorflow as tf
 from pycoral.utils.dataset import read_label_file
 from pycoral.adapters import detect
@@ -8,8 +10,9 @@ import cv2
 from pycoral.adapters import common
 import numpy as np
 
-model = r"C:\teste\TCC\COUNT\counteyeapi\tensor\beegeye_efficientdetline_objectDetection_80Epoc_64BZ.tflite"
-labels = read_label_file("C:/Users/julia/OneDrive/Área de Trabalho/Pirai/label_line_objectDetection.txt")
+model = "./beegeye_efficientdetline_objectDetection_80Epoc_64BZ.tflite"
+codeLabel = os.path.abspath("label_line_objectDetection.txt")
+labels = read_label_file(codeLabel)
 
 def teste(INPUT_IMAGE):
 

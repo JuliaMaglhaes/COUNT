@@ -1,0 +1,5 @@
+area_ocupada
+area_desocupada
+empilhadeira
+pessoa
+palete

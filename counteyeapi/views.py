@@ -17,7 +17,7 @@ from django.views.decorators import gzip
 from django.http import StreamingHttpResponse, HttpResponseServerError
 from django.shortcuts import render, redirect
 from counteyeapi.services.count_IA import count_product
-from counteyeapi.services.detection.detection import detection_product
+# from counteyeapi.services.detection.detection import detection_product
 from users.models import NewUser
 import os
 import math
