@@ -17,10 +17,12 @@ from django.shortcuts import render, redirect
 from counteyeapi.services.count_IA import count_product
 from counteyeapi.services.detection.detection import detection_product
 from users.models import NewUser
+import os
 import math
 from .models import *
 from django.core.paginator import Paginator
 import concurrent.futures
+
 
 
 class PermissionUserCount(BasePermission):
@@ -99,8 +101,11 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-modelWeightsPath = "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_training_last.weights"
-modelConfigurationPath = "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_testing.cfg"
+modelWeightsPath = os.path.abspath('yolov3_training_last.weights')
+modelConfigurationPath = os.path.abspath('yolov3_testing.cfg')
+
+# "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_training_last.weights"
+# "C:\Users\julia\OneDrive\Área de Trabalho\TCC\COUNT\counteyeapi\services\detection\yolov3_testing.cfg"
 
 net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
 
