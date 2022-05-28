@@ -12,4 +12,5 @@ darknet
 requirements2.txt
 /conf
 /tmp
-*log
+*.log
+*.tmp
