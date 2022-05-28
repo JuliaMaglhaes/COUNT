@@ -45,6 +45,7 @@ class CountDetail(generics.RetrieveAPIView):
 
 class CreateCount(APIView):
     permission_classes = [AllowAny]
+    
     parser_classes = [MultiPartParser, FormParser]
     queryset = Count.objects.all()
 
@@ -98,13 +99,13 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-# modelWeightsPath = "./counteyeapi/services/detection/yolov3_training_last.weights"
-# modelConfigurationPath = "./counteyeapi/services/detection/yolov3_testing.cfg"
+modelWeightsPath = "./counteyeapi/services/detection/yolov3_training_last.weights"
+modelConfigurationPath = "./counteyeapi/services/detection/yolov3_testing.cfg"
 
-# net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
+net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
 
-# model = cv2.dnn_DetectionModel(net)
-# model.setInputParams(size = (416, 416), scale=1/255)
+model = cv2.dnn_DetectionModel(net)
+model.setInputParams(size = (416, 416), scale=1/255)
 
 def iteraip(object):
     for i in object:
