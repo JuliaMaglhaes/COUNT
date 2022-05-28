@@ -99,8 +99,8 @@ COLORS = [(0, 255, 255), (255, 255, 0), (0, 255, 0), (255, 0, 0)]
 
 class_names = [c.strip() for c in open('./counteyeapi/services/detection/names.names').readlines()]
 
-modelWeightsPath = "./counteyeapi/services/detection/yolov3_training_last.weights"
-modelConfigurationPath = "./counteyeapi/services/detection/yolov3_testing.cfg"
+modelWeightsPath = "./counteyeapi/yolov3_training_last2.weights"
+modelConfigurationPath = "./counteyeapi/yolov3_testing2.cfg"
 
 net = cv2.dnn.readNet(modelConfigurationPath, modelWeightsPath)
 
