@@ -1,5 +1,4 @@
 import os
-from core.settings import BASE_DIR
 import tensorflow as tf
 from pycoral.utils.dataset import read_label_file
 from pycoral.adapters import detect
@@ -10,9 +9,10 @@ import cv2
 from pycoral.adapters import common
 import numpy as np
 
-model = "./beegeye_efficientdetline_objectDetection_80Epoc_64BZ.tflite"
+model = os.path.abspath("beegeye_efficientdetline_objectDetection_80Epoc_64BZ.tflite")
 codeLabel = os.path.abspath("label_line_objectDetection.txt")
 labels = read_label_file(codeLabel)
+detections = []
 
 def teste(INPUT_IMAGE):
 
@@ -30,15 +30,8 @@ def teste(INPUT_IMAGE):
                 '%s\n%.2f' % (labels.get(obj.id, obj.id), obj.score),
                 fill=color, font=font)
 
-      print('obj: ',obj)
-      print('label: ',labels.get(obj.id, obj.id))
-
-
-    predict = {
-      "class": "Desconhecido"
-    }
-
-    return predict
+      labelsDetection = labels.get(obj.id, obj.id)
+      detections.append(labelsDetection)
 
   interpreter = tf.lite.Interpreter(model)
   input_details = interpreter.get_input_details()
@@ -46,7 +39,6 @@ def teste(INPUT_IMAGE):
   interpreter.allocate_tensors()
 
   interpreter.invoke()
-
 
   image = Image.open(INPUT_IMAGE)
   _, scale = common.set_resized_input(interpreter, image.size, lambda size: image.resize(size, Image.ANTIALIAS))
@@ -59,6 +51,21 @@ def teste(INPUT_IMAGE):
   image = image.resize((display_width, int(display_width * height_ratio)))
 
   draw_objects(ImageDraw.Draw(image), objs, scale_factor, labels)
+
+  try:
+    predict = {
+      "class": detections[0]
+    }
+
+  except Exception as ex:
+    predict = {
+      "class": "Desconhecido"
+    }
+
+  
+  count = detections.count(detections[0])
+
+  return predict, count
 
   
 

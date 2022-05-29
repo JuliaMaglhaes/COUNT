@@ -59,11 +59,11 @@ class CreateCount(APIView):
 
         if serializer.is_valid():
             count = serializer.save()
-            predict = teste(serializer.validated_data["image"])
-            xamount = count_product(serializer.validated_data["image"])
+            # predict = teste(serializer.validated_data["image"])
+            predict, xamount = teste(serializer.validated_data["image"])
+            #  = count_product(serializer.validated_data["image"])
             count.amount = xamount
-            count.product = "RedBull Melancia"
-            # count.product = predict["class"]
+            count.product = predict["class"]
             count.author = user_qualquer
             count.save()
             acount=0
