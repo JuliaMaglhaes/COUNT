@@ -1,5 +1,6 @@
 from threading import Thread
 from core.settings import BASE_DIR
+from counteyeapi.tensor.countteste import counttest
 from counteyeapi.tensor.teste import teste
 from rest_framework import generics
 from rest_framework.permissions import SAFE_METHODS,AllowAny,  IsAuthenticated, DjangoModelPermissions, BasePermission
@@ -60,19 +61,25 @@ class CreateCount(APIView):
         if serializer.is_valid():
             count = serializer.save()
             # predict = teste(serializer.validated_data["image"])
-            predict, xamount = teste(serializer.validated_data["image"])
-            #  = count_product(serializer.validated_data["image"])
+            xamount = 0
+            predict = teste(serializer.validated_data["image"])
+            xamount = counttest(serializer.validated_data["image"])
             count.amount = xamount
+
             count.product = predict["class"]
             count.author = user_qualquer
             count.save()
             acount=0
 
+            print('count amount',count.amount)
+
             for a in ProductsRegister.objects.filter(product=count.product):
-                acount = a.amount               
+                acount = a.amount     
+
+                print('acount', acount)          
                
-            print(acount)
             t= ProductsRegister.amount
+
             ProductsRegister.objects.filter(product=count.product).update(product=count.product , amount = count.amount + acount)
      
             return Response({"produto":predict, "amount": xamount}, status=status.HTTP_200_OK)

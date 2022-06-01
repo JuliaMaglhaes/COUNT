@@ -10,7 +10,3 @@ darknet
 /venvp
 /darknet
 requirements2.txt
-/conf
-/tmp
-*.log
-*.tmp

@@ -15,10 +15,12 @@ codeLabel = os.path.abspath("label_line_objectDetection.txt")
 labels = read_label_file(codeLabel)
 detections = []
 
-def teste(INPUT_IMAGE):
-  detections = []
+count = 0
+def counttest(INPUT_IMAGE):
+  count = 0
+  detections = [] 
   def draw_objects(draw, objs, scale_factor, labels):
-    
+     
     COLORS = np.random.randint(0, 255, size=(len(labels), 3), dtype=np.uint8)
     for obj in objs:
       bbox = obj.bbox
@@ -52,18 +54,13 @@ def teste(INPUT_IMAGE):
 
   draw_objects(ImageDraw.Draw(image), objs, scale_factor, labels)
 
-  try:
-    predict = {
-      "class": detections[0]
-    }
-
-  except Exception as ex:
-    predict = {
-      "class": "Desconhecido"
-    }
+  
+  count = detections.count(detections[0])
+  print(detections)
+  print('count',count)
 
 
-  return predict
+  return count
 
   
 
