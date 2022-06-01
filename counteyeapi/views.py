@@ -63,6 +63,7 @@ class CreateCount(APIView):
             # predict = teste(serializer.validated_data["image"])
             xamount = 0
             predict = teste(serializer.validated_data["image"])
+            
             xamount = counttest(serializer.validated_data["image"])
             count.amount = xamount
 

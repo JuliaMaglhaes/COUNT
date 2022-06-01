@@ -1,4 +1,5 @@
 import os
+from counteyeapi.services.count_IA import count_product
 import tensorflow as tf
 from pycoral.utils.dataset import read_label_file
 from pycoral.adapters import detect
@@ -54,11 +55,19 @@ def counttest(INPUT_IMAGE):
 
   draw_objects(ImageDraw.Draw(image), objs, scale_factor, labels)
 
-  
-  count = detections.count(detections[0])
-  print(detections)
-  print('count',count)
+  try:
+    predict = {
+      "class": detections[0]
+    }
+    count = detections.count(detections[0])
+    
+  except Exception as ex:
+    predict = {
+      "class": "Desconhecido"
+    }
+    count = count_product(INPUT_IMAGE)
 
+  
 
   return count
 
