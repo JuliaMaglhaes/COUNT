@@ -26,7 +26,10 @@ from .models import *
 from django.core.paginator import Paginator
 import concurrent.futures
 
-
+class ItensCount(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = ProductsRegister.objects.all()
+    serializer_class = CountSerializer
 
 class PermissionUserCount(BasePermission):
     message = 'Somente autores do envio'

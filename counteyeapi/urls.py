@@ -1,5 +1,5 @@
 from django.urls import path,  re_path
-from .views import CountList, CountDetail, CreateCount, EditCount, DeleteCount, AdminCountDetail
+from .views import CountList, CountDetail, CreateCount, EditCount, DeleteCount, AdminCountDetail, ItensCount
 from rest_framework.routers import DefaultRouter
 from .import views
 
@@ -8,6 +8,7 @@ app_name = 'counteyeapi'
 urlpatterns = [
     path('', CountList.as_view(), name='countlist'),
     path('post/<str:pk>/', CountDetail.as_view(), name='detailcount'),
+    path('itens/', ItensCount.as_view(), name='detailcount'),
 
     # cameras
     path('cameras/', views.cameras, name="cameras"),
