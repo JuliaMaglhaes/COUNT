@@ -1,5 +1,5 @@
 from django.urls import path,  re_path
-from .views import CountList, CountDetail, CreateCount, EditCount, DeleteCount, AdminCountDetail, ItensCount
+from .views import CountList, CountDetail, CreateCount, EditCount, DeleteCount, AdminCountDetail, ItensCount, camerasConection
 from rest_framework.routers import DefaultRouter
 from .import views
 
@@ -8,7 +8,7 @@ app_name = 'counteyeapi'
 urlpatterns = [
     path('', CountList.as_view(), name='countlist'),
     path('post/<str:pk>/', CountDetail.as_view(), name='detailcount'),
-    path('itens/', ItensCount.as_view(), name='detailcount'),
+    path('itens/', ItensCount.as_view(), name='itens'),
 
     # cameras
     path('cameras/', views.cameras, name="cameras"),
@@ -18,7 +18,7 @@ urlpatterns = [
     path('editcamera/<int:id>', views.editcamera, name="editcamera"),
     # path('dynamic_stream/', views.dynamic_stream, name="dynamic_stream"),
     path('dynamic_stream/<str:descricao>', views.dynamic_stream, name="dynamic_stream"),
-    
+    path('camerasconect/', camerasConection.as_view(), name='camerasConection'),
 
     # postagens
     path('admin/create/', CreateCount.as_view(), name='createcount'),

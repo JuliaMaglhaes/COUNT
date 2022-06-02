@@ -4,7 +4,7 @@ from counteyeapi.tensor.countteste import counttest
 from counteyeapi.tensor.teste import teste
 from rest_framework import generics
 from rest_framework.permissions import SAFE_METHODS,AllowAny,  IsAuthenticated, DjangoModelPermissions, BasePermission
-from .serializers import CountSerializer
+from .serializers import CameraSerializer, CountSerializer
 from counteye.models import Count, ProductsRegister
 from rest_framework.response import Response
 from rest_framework import status
@@ -244,6 +244,12 @@ def indexscreen(request):
         print("error")
 
 # Configuração cameras
+
+class camerasConection(generics.ListAPIView):
+    permission_classes = [AllowAny]
+    queryset = Cameras.objects.all()
+    serializer_class = CameraSerializer
+
 
 def cameras(request):
     cameras = Cameras.objects.all()

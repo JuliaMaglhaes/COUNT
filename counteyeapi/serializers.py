@@ -1,12 +1,18 @@
 from counteye.models import Count, ProductsRegister
 from rest_framework import serializers
+from counteyeapi.models import Cameras
 from django.conf import settings
 
 class CountSerializer(serializers.ModelSerializer):
     class Meta:
         model = Count
         fields = ('image', 'id', 'product', 'amount')
-    
+
+class CameraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Cameras
+        fields = ('ip', 'descricao')
+
 class UserRegisterSerializer(serializers.ModelSerializer):
 
     email = serializers.EmailField(required=True)
